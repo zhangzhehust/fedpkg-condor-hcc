@@ -36,7 +36,7 @@
 %define git_build 1
 # If building with git tarball, Fedora requests us to record the rev.  Use:
 # git log -1 --pretty=format:'%h'
-%define git_rev 3c50666
+%define git_rev 0136869
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -48,7 +48,7 @@ Name: condor
 Version: 8.1.0
 %define condor_base_release 0.1
 %if %git_build
-	%define condor_release %condor_base_release.%{git_rev}.git
+	%define condor_release %condor_base_release.%{git_rev}.git.lark
 %else
 	%define condor_release %condor_base_release
 %endif
@@ -839,6 +839,19 @@ rm -rf %{buildroot}
 %_mandir/man1/condor_gather_info.1.gz
 %_mandir/man1/condor_router_rm.1.gz
 %_mandir/man1/condor_qsub.1.gz
+%_mandir/man1/bosco_cluster.1.gz
+%_mandir/man1/bosco_findplatform.1.gz
+%_mandir/man1/bosco_install.1.gz
+%_mandir/man1/bosco_ssh_start.1.gz
+%_mandir/man1/bosco_start.1.gz
+%_mandir/man1/bosco_stop.1.gz
+%_mandir/man1/bosco_uninstall.1.gz
+%_mandir/man1/condor_drain.1.gz
+%_mandir/man1/condor_install.1.gz
+%_mandir/man1/condor_ping.1.gz
+%_mandir/man1/condor_rmdir.1.gz
+%_mandir/man1/condor_tail.1.gz
+%_mandir/man1/condor_who.1.gz
 
 # bin/condor is a link for checkpoint, reschedule, vacate
 %_libdir/libcondor_utils*.so
@@ -937,8 +950,8 @@ rm -rf %{buildroot}
 %_datadir/condor/libcondorapi.so
 
 # Lark files.
-#%_libdir/condor/plugins/lark-plugin.so
-#%_libexecdir/condor/lark_network_namespace_tester
+%_libdir/condor/plugins/lark-plugin.so
+%_libexecdir/condor/lark_network_namespace_tester
 
 #################
 %files procd
@@ -1228,6 +1241,9 @@ fi
 %endif
 
 %changelog
+* Wed Jul 3 2013 <zzhang@cse.unl.edu> - 8.1.0-0.1.0136869.git.lark
+- Rebuild lark for 8.1.0 pre-release.
+
 * Thu Jun 13 2013 <bbockelm@cse.unl.edu> - 8.1.0-0.1.3c50666.git
 - Update to 8.1.0 pre-release.
 
