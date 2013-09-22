@@ -36,7 +36,7 @@
 %define git_build 1
 # If building with git tarball, Fedora requests us to record the rev.  Use:
 # git log -1 --pretty=format:'%h'
-%define git_rev 0136869
+%define git_rev dd1f0eb
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -45,7 +45,7 @@
 
 Summary: Condor: High Throughput Computing
 Name: condor
-Version: 8.1.0
+Version: 8.1.2
 %define condor_base_release 0.1
 %if %git_build
 	%define condor_release %condor_base_release.%{git_rev}.git.lark
@@ -551,8 +551,10 @@ populate %{_datadir}/condor %{buildroot}/%{_usr}/lib/*
 # Except for the shared libs
 populate %{_libdir}/ %{buildroot}/%{_datadir}/condor/libclassad.s*
 populate %{_libdir}/ %{buildroot}/%{_datadir}/condor/libcondor_utils*.so
+populate %{_libdir}/ %{buildroot}/%{_datadir}/condor/libpyclassad*.so
 rm -f %{buildroot}/%{_datadir}/condor/libclassad.a
 rm -f %{buildroot}/%{_datadir}/condor/libpyclassad_*.a
+rm -f %{buildroot}/%{_datadir}/condor/libpyclassad*.so
 
 %if %aviary
 populate %{_libdir}/condor/plugins %{buildroot}/%{_usr}/libexec/*-plugin.so
@@ -661,6 +663,7 @@ install -Dp -m0755 %{buildroot}/etc/examples/condor.init %buildroot/%_initrddir/
 
 mkdir -p %{buildroot}%{python_sitearch}
 install -m 0755 src/python-bindings/{classad,htcondor}.so %{buildroot}%{python_sitearch}
+install -m 0755 src/python-bindings/libpyclassad*.so %{buildroot}%{_libdir}
 #install -m 0755 src/condor_contrib/python-bindings/libpyclassad_*.so %{buildroot}%{_libdir}
 
 # we must place the config examples in builddir so %doc can find them
@@ -718,7 +721,7 @@ rm -rf %{buildroot}%{_datadir}/condor/libcondorapi.a
 #rm -f %{buildroot}/etc/examples/cmd_cluster.rb
 #rm -f %{buildroot}/etc/examples/condor.sh
 rm -rf %{buildroot}%{_datadir}/condor/python/{htcondor,classad}.so
-rm -rf %{buildroot}%{_datadir}/condor/{libpyclassad_*,htcondor,classad}.so
+rm -rf %{buildroot}%{_datadir}/condor/{libpyclassad*,htcondor,classad}.so
 
 rm %{buildroot}%{_libexecdir}/condor/condor_schedd.init
 
@@ -873,6 +876,7 @@ rm -rf %{buildroot}
 %_bindir/condor_reschedule
 %_bindir/condor_userprio
 %_bindir/condor_dagman
+%_libexecdir/condor/condor_dagman_metrics_reporter
 %_bindir/condor_rm
 %_bindir/condor_vacate
 %_bindir/condor_run
@@ -884,6 +888,7 @@ rm -rf %{buildroot}
 %_bindir/condor_stats
 %_bindir/condor_version
 %_bindir/condor_history
+%_libexecdir/condor/condor_history_helper
 %_bindir/condor_status
 %_bindir/condor_wait
 %_bindir/condor_hold
@@ -1160,7 +1165,7 @@ rm -rf %{buildroot}
 
 %files python
 %defattr(-,root,root,-)
-#%_libdir/libpyclassad_*.so
+%_libdir/libpyclassad*.so
 %{python_sitearch}/classad.so
 %{python_sitearch}/htcondor.so
 
@@ -1177,9 +1182,11 @@ rm -rf %{buildroot}
 %_bindir/bosco_cluster
 %_bindir/bosco_ssh_start
 %_bindir/bosco_start
+%_bindir/bosco_quickstart
 %_bindir/bosco_stop
 %_bindir/bosco_findplatform
 %_bindir/bosco_uninstall
+%_bindir/htsub
 %_sbindir/glidein_creation
 %_datadir/condor/campus_factory
 %{python_sitelib}/GlideinWMS
@@ -1241,6 +1248,9 @@ fi
 %endif
 
 %changelog
+* Sun Sep 22 2013 <zzhang@cse.unl.edu> - 8.1.2-0.1.dd1f0eb.git.lark
+- Rebuild lark for 8.2.1
+
 * Wed Jul 3 2013 <zzhang@cse.unl.edu> - 8.1.0-0.1.0136869.git.lark
 - Rebuild lark for 8.1.0 pre-release.
 
