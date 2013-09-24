@@ -1,4 +1,4 @@
-%define tarball_version 8.1.0
+%define tarball_version 8.1.2
 
 #%define _default_patch_fuzz 2
 
